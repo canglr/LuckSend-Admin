@@ -1,0 +1,315 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Social Media > {{ socialmedia.author_name }} > Edit
+{% endblock %}
+
+{% block content %}
+
+    <div class="row clearfix">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="card profile-card">
+                        <div class="profile-header"></div>
+                        <div class="profile-body">
+                            <div class="image-area">
+                                <img src="{{ author_image }}" width="136px" height="136px" />
+                            </div>
+                            <div class="content-area">
+                                <h3>{{ socialmedia.author_name|upper }}</h3>
+                                <p></p>
+                                <p>{{ socialmedia.id }}#{{ socialmedia.id_share }}</p>
+                            </div>
+                        </div>
+                        <div class="profile-footer">
+                            <ul>
+                                 <li>
+                                    <button data-toggle="modal" data-target="#SocialmediaShowModal" class="btn bg-black waves-effect btn-block"><i class="material-icons">open_in_new</i></button>
+                                 </li>
+                                 <li>
+                                    <a target="_blank" class="btn bg-black waves-effect btn-block" href="{{ socialmedia.media_url }}"><i class="material-icons">open_in_browser</i></a>
+                                 </li>
+                                 <li>
+                                    <span>Display</span>
+                                    <span>{{ socialstatistics_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Clicks</span>
+                                    <span>{{ socialstatistics_clicks_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Saved</span>
+                                    <span>{{ saved_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Sponsor</span>
+                                    <span>
+                                        {% if socialmedia.sponsor %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Verification</span>
+                                    <span>
+                                        {% if socialmedia.verification %}<i class="material-icons">verified_user</i>{% else %}<i class="material-icons">warning</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Type</span>
+                                    <span>
+                                        {% if socialmedia.type %}<i class="material-icons">card_giftcard</i>{% else %}<i class="material-icons">attach_money</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Delete</span>
+                                    <span>
+                                        {% if socialmedia.delete %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Disable</span>
+                                    <span>
+                                        {% if socialmedia.disable %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card card-about-me">
+                        <div class="body">
+                            <ul>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">language</i>
+                                        Language
+                                    </div>
+                                    <div class="content">
+                                        {% for country in countries %}
+                                        <span class="label bg-black">{{ country.country_code }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">tag</i>
+                                        Tags
+                                    </div>
+                                    <div class="content">
+                                        {% for tag in tags %}
+                                        <span class="label bg-black">{{ tag.tag_name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Creation date
+                                    </div>
+                                    <div class="content">
+                                        {{ socialmedia.creation_date|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">update</i>
+                                        Last update
+                                    </div>
+                                    <div class="content">
+                                        {{ socialmedia.last_update|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="card">
+                        <div class="body">
+                            <div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li><a href="/Socialmedia/detail?id={{ socialmedia.id_share }}">Statistics</a></li>
+                                    <li><a href="/Socialmedia/saved?id={{ socialmedia.id_share }}">Saved</a></li>
+                                    <li class="active"><a href="/Socialmedia/edit?id={{ socialmedia.id_share }}">Edit</a></li>
+                                </ul>
+
+ <div class="tab-content">
+<div class="form-group">
+
+              <div class="form-group">
+                <small><b><label>Description:</label></b></small>
+                  <div class="form-line">
+                      <textarea rows="15" class="form-control" id="socialmedia_description">{{ socialmedia.media_description }}</textarea>
+                  </div>
+              </div>
+
+
+              <div class="form-group">
+                <small><b><label>Tags:</label></b></small>
+                  <div class="form-line">
+                      <input type="text" class="form-control" autocomplete="off" id="socialmedia_tags">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Country:</label></b></small>
+                      <select id="socialmedia_countries_list">
+                      </select>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Sponsor:</label></b></small>
+                  <div class="switch">
+                      <label><input id="socialmedia_sponsor" type="checkbox" {% if socialmedia.sponsor %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                  </div>
+                </div>
+
+                <small><b><label>Verification:</label></b></small>
+                  <div class="switch">
+                      <label><input id="socialmedia_verification" type="checkbox" {% if socialmedia.verification %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                  </div>
+                </div>
+
+                <small><b><label>Type:</label></b></small>
+                  <div class="switch">
+                      <i class="material-icons">attach_money</i>
+                      <label><input id="socialmedia_type" type="checkbox" {% if socialmedia.type %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                      <i class="material-icons">card_giftcard</i>
+                  </div>
+                </div>
+
+                <small><b><label>Delete:</label></b></small>
+                  <div class="switch">
+                      <label><input id="socialmedia_delete" type="checkbox" {% if socialmedia.delete %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Disable:</label></b></small>
+                  <div class="switch">
+                      <label><input id="socialmedia_disable" type="checkbox" {% if socialmedia.disable %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                  </div>
+              </div>
+
+              <button onclick="socialmedia_update();" class="btn bg-black waves-effect btn-sm"><i class="material-icons">check</i></button>
+</div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+    <div class="modal fade" id="SocialmediaShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <textarea rows="20" readonly="readonly" class="form-control">{{ socialmedia.media_description }}</textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.css">
+{% endblock %}
+
+{% block js %}
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.js"></script>
+    <script>
+        Socialmediagetlist('{{ socialmedia.id_share }}');
+        function Socialmediagetlist(id) {
+            SocialmediaCountriesList();
+            $.ajax({
+                url: '/SocialmediaTagsList',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        let selectize = $select[0].selectize;
+                        selectize.addOption(result.tags);
+                        tags_value = [];
+                        for (let i=0; i<result.tags.length; i++)
+                        {
+                            tags_value.push(result.tags[i]["text"]);
+                        }
+                        selectize.setValue(tags_value);
+                        let $selectupdate = $(document.getElementById('socialmedia_countries_list')).selectize();
+                        let selectizeupdate = $selectupdate[0].selectize;
+                        selectizeupdate.setValue(result.countries_selected);
+
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function SocialmediaCountriesList() {
+            $.ajax({
+                url: '/SocialmediaCountriesList',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    let $selectupdate = $(document.getElementById('socialmedia_countries_list')).selectize();
+                    let selectizeupdate = $selectupdate[0].selectize;
+                    selectizeupdate.addOption(result);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function socialmedia_update() {
+            $.ajax({
+                url: '/SocialmediaUpdate',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: '{{ socialmedia.id_share }}',
+                    description: document.getElementById('socialmedia_description').value,
+                    sponsor: document.getElementById('socialmedia_sponsor').checked,
+                    verification: document.getElementById('socialmedia_verification').checked,
+                    type: document.getElementById('socialmedia_type').checked,
+                    delete: document.getElementById('socialmedia_delete').checked,
+                    disable: document.getElementById('socialmedia_disable').checked,
+                    tags: document.getElementById('socialmedia_tags').value,
+                    countries: $('#socialmedia_countries_list')[0].selectize.items.join(',')
+                },
+                success: function (result) {
+                        alertbox(result.result,result.status);
+                },
+                error: function (error) {
+
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+let $select = $('#socialmedia_tags').selectize({
+    delimiter: ',',
+    persist: true,
+    maxTags: 4,
+    create: true
+    });
+
+$('#socialmedia_countries_list').selectize({
+	 maxItems: 10,
+     delimiter: ',',
+     persist: true
+    });
+    </script>
+
+{% endblock %}

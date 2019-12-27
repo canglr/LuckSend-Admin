@@ -1,0 +1,175 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block ctitle %}
+Dashboard
+{% endblock %}
+
+{% block content %}
+
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">people</i>
+         </div>
+          <div class="content">
+          <div class="text">USERS</div>
+          <div id="users_count" class="number count-to">0</div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">card_giftcard</i>
+         </div>
+          <div class="content">
+          <div class="text">RAFFLES</div>
+          <div id="raffles_count" class="number count-to">0</div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">card_giftcard</i>
+         </div>
+          <div class="content">
+          <div class="text">RAFFLES (FNSH)</div>
+          <div id="raffles_completed_count" class="number count-to">0</div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">feedback</i>
+         </div>
+          <div class="content">
+          <div class="text">FEEDBACKS</div>
+          <div id="feedbacks_count" class="number count-to">0</div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">developer_board</i>
+         </div>
+          <div class="content">
+          <div class="text">CPU</div>
+          <div id="cpu" class="number count-to">0</div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">memory</i>
+         </div>
+          <div class="content">
+          <div class="text">RAM</div>
+          <div><b><span id="ram_total">0</span>-<span id="ram_cached">0</span>-<span id="ram_used">0</span>=<span id="ram_free">0</span> MB</b></div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">memory</i>
+         </div>
+          <div class="content">
+          <div class="text">RAM SWAP</div>
+          <div><b><span id="ram_swap_total">0</span>-<span id="ram_swap_used">0</span>=<span id="ram_swap_free">0</span> MB</b></div>
+         </div>
+     </div>
+</div>
+
+<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+    <div class="info-box">
+         <div class="icon bg-black">
+              <i class="material-icons">update</i>
+         </div>
+          <div class="content">
+          <div class="text">UPTIME</div>
+          <div><b><span id="uptime"></span></b></div>
+         </div>
+     </div>
+</div>
+
+
+{% endblock %}
+
+{% block cardcontent %}
+
+{% endblock %}
+
+
+{% block js %}
+
+    <script>
+    getappstatus();
+    getsystemstatus();
+    window.setInterval(getappstatus, 15000);
+    window.setInterval(getsystemstatus, 3000);
+    function getappstatus() {
+        $.ajax({
+                url: '/dashboard/app/status',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    document.getElementById('users_count').innerHTML = result.users_count;
+                    document.getElementById('raffles_count').innerHTML = result.raffles_count;
+                    document.getElementById('raffles_completed_count').innerHTML = result.raffles_completed_count;
+                    document.getElementById('feedbacks_count').innerHTML = result.feedbacks_count;
+                },
+                error: function (error) {
+                    document.getElementById('users_count').innerHTML = "-1";
+                    document.getElementById('raffles_count').innerHTML = "-1";
+                    document.getElementById('raffles_completed_count').innerHTML = "-1";
+                    document.getElementById('feedbacks_count').innerHTML = "-1";
+                }
+            });
+    }
+
+    function getsystemstatus() {
+        $.ajax({
+                url: '/dashboard/system/status',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    document.getElementById('cpu').innerHTML = result.cpu + " %";
+                    document.getElementById('ram_total').innerHTML = result.ram_total;
+                    document.getElementById('ram_cached').innerHTML = result.ram_cached;
+                    document.getElementById('ram_used').innerHTML = result.ram_used;
+                    document.getElementById('ram_free').innerHTML = result.ram_free;
+                    document.getElementById('ram_swap_total').innerHTML = result.ram_swap_total;
+                    document.getElementById('ram_swap_used').innerHTML = result.ram_swap_used;
+                    document.getElementById('ram_swap_free').innerHTML = result.ram_swap_free;
+                    document.getElementById('uptime').innerHTML = result.uptime + " DAY";
+                },
+                error: function (error) {
+                    document.getElementById('cpu').innerHTML = "-1";
+                    document.getElementById('ram_total').innerHTML = "0";
+                    document.getElementById('ram_cached').innerHTML = "0";
+                    document.getElementById('ram_used').innerHTML = "0";
+                    document.getElementById('ram_free').innerHTML = "0";
+                    document.getElementById('ram_swap_total').innerHTML = "0";
+                    document.getElementById('ram_swap_used').innerHTML = "0";
+                    document.getElementById('ram_swap_free').innerHTML = "0";
+                    document.getElementById('uptime').innerHTML = "-1";
+                }
+            });
+    }
+    </script>
+
+{% endblock %}

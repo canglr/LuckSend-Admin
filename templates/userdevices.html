@@ -1,0 +1,154 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+User > {{ user.name }} > Devices
+{% endblock %}
+
+{% block content %}
+
+    <div class="row clearfix">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="card profile-card">
+                        <div class="profile-header">&nbsp;</div>
+                        <div class="profile-body">
+                            <div class="image-area">
+                                <img src="{{ user.profile_picture }}" width="136px" height="136px" title="{{ user.name }}" alt="{{ user.name }}" />
+                            </div>
+                            <div class="content-area">
+                                <h3>{{ user.name|upper }}</h3>
+                                <p>{{ user.mail_adress }}</p>
+                                <p>{{ user.id }}#{{ user.id_share }}</p>
+                            </div>
+                        </div>
+                        <div class="profile-footer">
+                            <ul>
+                                <li>
+                                    <span>Raffles</span>
+                                    <span>{{ raffles_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Participants</span>
+                                    <span>{{ participants_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Devices</span>
+                                    <span>{{ devices_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Feedbacks</span>
+                                    <span>{{ feedbacks_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Logs</span>
+                                    <span>{{ logs_count }}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card card-about-me">
+                        <div class="header">
+                            <h2>ABOUT ME</h2>
+                        </div>
+                        <div class="body">
+                            <ul>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">language</i>
+                                        Language
+                                    </div>
+                                    <div class="content">
+                                        {{ user.local|upper }}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Creation date
+                                    </div>
+                                    <div class="content">
+                                        {{ user.creation_date|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">update</i>
+                                        Last update
+                                    </div>
+                                    <div class="content">
+                                        {{ user.last_update|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="card">
+                        <div class="body">
+                            <div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li><a href="/User/detail?id={{ user.id_share }}">Raffles</a></li>
+                                    <li><a href="/User/participants?id={{ user.id_share }}">Participants</a></li>
+                                    <li class="active"><a href="/User/devices?id={{ user.id_share }}">Devices</a></li>
+                                    <li><a href="/User/feedbacks?id={{ user.id_share }}">Feedbacks</a></li>
+                                    <li><a href="/User/logs?id={{ user.id_share }}">Logs</a></li>
+                                </ul>
+
+ <div class="tab-content">
+{% if devices.items %}
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>BRAND</th>
+             <th>MODEL</th>
+             <th>RELEASE</th>
+             <th>CREATION DATE</th>
+             <th>KEY EXPIRATION</th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for device in devices.items %}
+         <tr>
+             <td scope="row">{{ device.id }}</td>
+             <td>{{ device.brand }}</td>
+             <td>{{ device.model }}</td>
+             <td>{{ device.release }}</td>
+             <td>{{ device.creation_date|datetime_short }}</td>
+             <td>{{ device.expiration|datetime_short }}</td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}&id={{ user.id_share }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}&id={{ user.id_share }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}

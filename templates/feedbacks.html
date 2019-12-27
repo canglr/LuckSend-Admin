@@ -1,0 +1,134 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Feedbacks
+{% endblock %}
+
+{% block content %}
+{% if feedbacks.items %}
+
+     <div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Feedbacks
+                            </h2>
+                        </div>
+                        <div class="body">
+
+
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>USER NAME</th>
+             <th>CREATION DATE</th>
+             <th>LAST UPDATE</th>
+             <th></th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for feedback in feedbacks.items %}
+         <tr>
+             <th scope="row">{{ feedback.id }}</th>
+             <td>{{ feedback.name }}</td>
+             <td>{{ feedback.creation_date|datetime_short }}</td>
+             <td>{{ feedback.last_update|datetime_short }}</td>
+             <td>{%  if feedback.read %}<i class="material-icons">mail_outline</i>{% else %}<i class="material-icons">email</i>{% endif %}</td>
+             <td><button onclick="FeedbackShow('{{ feedback.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">open_in_new</i></button></td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+
+                    </div>
+               </div>
+          </div>
+     </div>
+
+
+<div class="modal fade" id="FeedbackShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="panel panel-default panel-post">
+                                            <div class="panel-heading">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <a id="photo_user_link" target="_blank" href="#">
+                                                            <img id="profile_picture" src="">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <h4 class="media-heading">
+                                                            <a id="user_link" target="_blank" href="#"><div id="user_name"></div></a>
+                                                        </h4>
+                                                        <div id="creation_date"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="post">
+                                                    <div class="post-heading">
+                                                        <p><div id="description"></div></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+    <script>
+    function FeedbackShow(id) {
+            $.ajax({
+                url: '/FeedbackShow',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        $('#user_name').html(result.name);
+                        $('#creation_date').html(result.creation_date);
+                        $('#description').html(result.description);
+                        document.getElementById("profile_picture").src=result.profile_picture;
+                        document.getElementById("user_link").href='/User/detail?id='+result.user_id;
+                        document.getElementById("photo_user_link").href='/User/detail?id='+result.user_id;
+                        $("#FeedbackShowModal").modal('show');
+                },
+                error: function (error) {
+                    swal.close();
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+    </script>
+{% endblock %}

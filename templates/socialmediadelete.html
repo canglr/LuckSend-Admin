@@ -1,0 +1,214 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Social Media > Delete
+{% endblock %}
+
+{% block content %}
+
+ <div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Social Media
+                            </h2>
+                        </div>
+                        <div class="body">
+                            <div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li><a href="/Socialmedia">No filter <span id="no_filter_statistics" class="badge badge-secondary">0</span></a></li>
+                                    <li><a href="/Socialmedia/verified">Verified <span id="verified_statistics" class="badge badge-secondary">0</span></a></li>
+                                    <li><a href="/Socialmedia/verification">Verification <span id="verification_statistics" class="badge badge-secondary">0</span></a></li>
+                                    <li><a href="/Socialmedia/disable">Disable <span id="disable_statistics" class="badge badge-secondary">0</span></a></li>
+                                    <li class="active"><a href="/Socialmedia/delete">Delete <span id="delete_statistics" class="badge badge-secondary">0</span></a></li>
+                                    <li><a href="/Socialmedia/sponsor">Sponsor <span id="sponsor_statistics" class="badge badge-secondary">0</span></a></li>
+                                </ul>
+
+ <div class="tab-content">
+
+{% if socialmedias.items %}
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID SHARE</th>
+             <th>AUTHOR NAME</th>
+             <th>LAST UPDATE</th>
+             <th>TYPE</th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for socialmedia in socialmedias.items %}
+         <tr>
+             <td scope="row">{{ socialmedia.id }}#{{ socialmedia.id_share }}</td>
+
+             <td>{{ socialmedia.author_name }}</td>
+
+             <td>{{ socialmedia.last_update|datetime_short }}</td>
+
+             <td>
+                 {% if socialmedia.type %} <i class="material-icons">card_giftcard</i> {% else %} <i class="material-icons">attach_money</i> {% endif %}
+             </td>
+
+             <td>
+                 <button onclick="SocialmediaShow('{{ socialmedia.id_share }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">open_in_new</i></button>
+                 <a class="btn bg-black waves-effect btn-sm" target="_blank" href="/Socialmedia/detail?id={{ socialmedia.id_share }}"><i class="material-icons">more_horiz</i></a>
+             </td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+
+    <div class="modal fade" id="SocialmediaShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="panel panel-default panel-post">
+                                            <div class="panel-heading">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <a id="author_link" target="_blank" href="#">
+                                                            <img id="author_image" src="">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <h4 class="media-heading">
+                                                            <a id="author_name_link" target="_blank" href="#"><div id="author_name"></div></a>
+                                                        </h4>
+                                                        <div id="creation_date"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="post">
+                                                    <div class="post-heading">
+                                                        <img class="img-thumbnail" id="media_image" src="">
+
+                                                        <textarea style="margin-top:10px;" rows="10" readonly="readonly" class="form-control" id="description"></textarea>
+
+                                                        <div class="panel panel-default" style="margin-top:10px;">
+                                                            <div class="panel-heading">Tags</div>
+                                                            <div class="panel-body">
+                                                                <div id="media_tags" style="margin:10px;"></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-heading">Countries</div>
+                                                            <div class="panel-body">
+                                                                 <div id="media_countries" style="margin:10px;"></div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a id="detail_link" type="button" class="btn btn-link waves-effect" target="_blank" href="#"><i class="material-icons">more_horiz</i></a>
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        socialmedia_statistics();
+        window.setInterval(socialmedia_statistics, 15000);
+        function socialmedia_statistics() {
+        $.ajax({
+                url: '/socialmedia/statistics/count',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    document.getElementById('no_filter_statistics').innerHTML = result.no_filter_statistics;
+                    document.getElementById('verified_statistics').innerHTML = result.verified_statistics;
+                    document.getElementById('verification_statistics').innerHTML = result.verification_statistics;
+                    document.getElementById('disable_statistics').innerHTML = result.disable_statistics;
+                    document.getElementById('delete_statistics').innerHTML = result.delete_statistics;
+                    document.getElementById('sponsor_statistics').innerHTML = result.sponsor_statistics;
+
+                },
+                error: function (error) {
+                    document.getElementById('no_filter_statistics').innerHTML = "-1";
+                    document.getElementById('verified_statistics').innerHTML = "-1";
+                    document.getElementById('verification_statistics').innerHTML = "-1";
+                    document.getElementById('disable_statistics').innerHTML = "-1";
+                    document.getElementById('delete_statistics').innerHTML = "-1";
+                    document.getElementById('sponsor_statistics').innerHTML = "-1";
+                }
+            });
+    }
+
+    function SocialmediaShow(id) {
+            $.ajax({
+                url: '/Socialmedia/Show',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        $('#author_name').html(result.author_name);
+                        $('#creation_date').html(result.creation_date);
+                        $('#description').html(result.description);
+                        document.getElementById("media_image").src=result.media_image;
+                        document.getElementById("author_image").src=result.author_image;
+                        document.getElementById("author_link").href='https://www.instagram.com/'+result.author_name;
+                        document.getElementById("author_name_link").href='https://www.instagram.com/'+result.author_name;
+                        document.getElementById("detail_link").href='/Socialmedia/detail?id='+result.id_share;
+                        tags_value = [];
+                        for (let i=0; i<result.tags.length; i++)
+                        {
+                            tags_value.push("<span class='label bg-black'>"+result.tags[i]["text"]+"</span> </br>");
+                        }
+
+                        countries_value = [];
+                        for (let i=0; i<result.countries.length; i++)
+                        {
+                            countries_value.push("<span class='label bg-black'>"+result.countries[i]+"</span> </br>");
+                        }
+                        $('#media_tags').html(tags_value.join(''));
+                        $('#media_countries').html(countries_value.join(''));
+                        $("#SocialmediaShowModal").modal('show');
+                },
+                error: function (error) {
+                    swal.close();
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+    </script>
+{% endblock %}

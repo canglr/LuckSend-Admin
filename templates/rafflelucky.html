@@ -1,0 +1,271 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Raffle > {{ raffle.title }} > Lucky
+{% endblock %}
+
+{% block content %}
+
+    <div class="row clearfix">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="card profile-card">
+                        <div class="profile-header"></div>
+                        <div class="profile-body">
+                            <div class="content-area">
+                                <h3>{{ raffle.title|upper }}</h3>
+                                <p>{{ raffle.description }}</p>
+                                <p>{{ raffle.id }}#{{ raffle.id_share }}</p>
+                            </div>
+                        </div>
+                        <div class="profile-footer">
+                            <ul>
+                                <li>
+                                    <span>Winners</span>
+                                    <span>{{ raffle.winners }}</span>
+                                </li>
+                                <li>
+                                    <span>Reserves</span>
+                                    <span>{{ raffle.reserves }}</span>
+                                </li>
+                                <li>
+                                    <span>Participants</span>
+                                    <span>{{ participants_count }}</span>
+                                </li>
+                                 <li>
+                                    <span>Status</span>
+                                    <span>
+                                        {% if raffle.status %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Processing</span>
+                                    <span>
+                                        {% if raffle.processing %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Completed</span>
+                                    <span>
+                                        {% if raffle.completed %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Delete</span>
+                                    <span>
+                                        {% if raffle.delete %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Disable</span>
+                                    <span>
+                                        {% if raffle.disable %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card card-about-me">
+                        <div class="body">
+                            <ul>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">language</i>
+                                        Language
+                                    </div>
+                                    <div class="content">
+                                        {% for country in countries %}
+                                        <span class="label bg-black">{{ country.country_code }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">tag</i>
+                                        Tags
+                                    </div>
+                                    <div class="content">
+                                        {% for tag in tags %}
+                                        <span class="label bg-black">{{ tag.tag_name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">contacts</i>
+                                        Contact information
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.contact_information }}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Expiration
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.expiration }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Creation date
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.creation_date|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">update</i>
+                                        Last update
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.last_update|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="card">
+                        <div class="body">
+                            <div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li><a href="/Raffle/detail?id={{ raffle.id_share }}">Participants</a></li>
+                                    <li class="active"><a href="/Raffle/lucky?id={{ raffle.id_share }}">Lucky</a></li>
+                                    <li><a href="/Raffle/edit?id={{ raffle.id_share }}">Edit</a></li>
+                                </ul>
+
+ <div class="tab-content">
+{% if lucky_winners %}
+<div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Winners
+                            </h2>
+                        </div>
+                        <div class="body">
+
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>NAME</th>
+             <th>DATE OF PARTICIPATION</th>
+             <th>CONTACT STATUS</th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for lucky_winner in lucky_winners %}
+         <tr>
+             <td scope="row">{{ lucky_winner.id }}</td>
+             <td>
+                 <div class="image">
+                    <img src="{{ lucky_winner.profile_picture }}" width="32" height="32" alt="User">
+                     {{ lucky_winner.name }}
+                </div>
+             </td>
+             <td>{{ lucky_winner.creation_date|datetime_short }}</td>
+             <td>
+                 <div class="switch">
+                     <label><input type="checkbox" disabled="disabled" {% if lucky_winner.check_key %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                 </div>
+             </td>
+             <td><td><a class="btn bg-black waves-effect btn-sm" target="_blank" href="/User/detail?id={{ lucky_winner.id_share }}"><i class="material-icons">more_horiz</i></a></td></td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+                    </div>
+               </div>
+          </div>
+     </div>
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+
+ {% if lucky_reserves %}
+<div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Reserves
+                            </h2>
+                        </div>
+                        <div class="body">
+ <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>NAME</th>
+             <th>DATE OF PARTICIPATION</th>
+             <th>CONTACT STATUS</th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for lucky_reserve in lucky_reserves %}
+         <tr>
+             <td scope="row">{{ lucky_reserve.id }}</td>
+             <td>
+                 <div class="image">
+                    <img class="img-circle" src="{{ lucky_reserve.profile_picture }}" width="32" height="32" alt="User">
+                     {{ lucky_reserve.name }}
+                </div>
+             </td>
+             <td>{{ lucky_reserve.creation_date|datetime_short }}</td>
+             <td>
+                 <div class="switch">
+                     <label><input type="checkbox" disabled="disabled" {% if lucky_reserve.check_key %} checked="checked" {% endif %}><span class="lever switch-col-black"></span></label>
+                 </div>
+             </td>
+             <td><td><a class="btn bg-black waves-effect btn-sm" target="_blank" href="/User/detail?id={{ lucky_reserve.id_share }}"><i class="material-icons">more_horiz</i></a></td></td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+ </div>
+
+                    </div>
+               </div>
+          </div>
+     </div>
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}

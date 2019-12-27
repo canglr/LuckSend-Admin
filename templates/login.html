@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>Luck Send - Login</title>
+    <!-- Favicon-->
+    <link rel="icon" href="../../favicon.ico" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap Core Css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes/bsbm/plugins/bootstrap/css/bootstrap.css') }}">
+
+    <!-- Waves Effect Css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes/bsbm/plugins/node-waves/waves.css') }}">
+
+    <!-- Animation Css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes/bsbm/plugins/animate-css/animate.css') }}">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes/bsbm/css/style.css') }}">
+    <style>
+        .login-page{
+            background: url('/Bgimage') no-repeat center center fixed;
+            background-color: white;
+            background-size: cover;
+        }
+    </style>
+</head>
+<body class="login-page">
+    <div class="login-box">
+        <div class="logo">
+            <a href="javascript:void(0);"><b>Luck Send</b></a>
+        </div>
+        <div class="card">
+            <div class="body">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">person</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="text" class="form-control" name="username"  {% if request.cookies.get('remember_me') %} value="{{ request.cookies.get('remember_me') }}" {% endif %} placeholder="Username" id="username" required autofocus>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="material-icons">lock</i>
+                        </span>
+                        <div class="form-line">
+                            <input type="password" class="form-control" name="password" placeholder="Password" id="password" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-8 p-t-5">
+                            <input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-black">
+                            <label for="rememberme">Remember Me</label>
+                        </div>
+                        <div class="col-xs-4">
+                            <button onclick="LoginPost();" class="btn btn-block bg-black waves-effect"><i class="material-icons">check</i></button>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="2fa" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="largeModalLabel">2FA</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="list-group">
+                               <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="code" class="form-control" placeholder="Code">
+                                        </div>
+                                    </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal">CLOSE</button>
+                            <button onclick="Twofa();" type="button" class="btn btn-link waves-effect">LOGIN</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <!-- Jquery Core Js -->
+    <script src="{{ url_for('static', filename='themes/bsbm/plugins/jquery/jquery.min.js') }}"></script>
+
+    <!-- Bootstrap Core Js -->
+    <script src="{{ url_for('static', filename='themes/bsbm/plugins/bootstrap/js/bootstrap.js') }}"></script>
+
+    <!-- Waves Effect Plugin Js -->
+    <script src="{{ url_for('static', filename='themes/bsbm/plugins/node-waves/waves.js') }}"></script>
+
+    <!-- Validation Plugin Js -->
+    <script src="{{ url_for('static', filename='themes/bsbm/plugins/jquery-validation/jquery.validate.js') }}"></script>
+
+    <!-- Custom Js -->
+    <script src="{{ url_for('static', filename='themes/bsbm/js/admin.js') }}"></script>
+
+    <script src="../../js/pages/examples/sign-in.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+
+    <script>
+        function LoginPost() {
+            $.ajax({
+                url: '/LoginPost',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    username: document.getElementById("username").value,
+                    password: document.getElementById("password").value,
+                    rememberme: document.getElementById("rememberme").checked
+                },
+                success: function (result) {
+                    if(result.status)
+                    {
+                        $("#2fa").modal('show');
+                    }else {
+                        alertbox(result.result, result.status);
+                    }
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+        function Twofa() {
+            $.ajax({
+                url: '/2FAPost',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    code: document.getElementById("code").value
+                },
+                success: function (result) {
+                    if(result.status)
+                    {
+                        window.location.href = "/";
+                    }
+                    alertbox(result.result,result.status);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+        function alertbox(info,status) {
+            const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                    });
+                    if(status)
+                    {
+                    Toast.fire({
+                    type: 'success',
+                    title: info
+                    })
+                    }
+                    else{
+                    Toast.fire({
+                    type: 'error',
+                    title: info
+                    })
+                    }
+        }
+    </script>
+</body>
+
+</html>

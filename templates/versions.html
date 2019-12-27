@@ -1,0 +1,320 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Versions
+{% endblock %}
+
+{% block content %}
+
+
+     <div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Versions
+                            </h2>
+                        </div>
+                        <div class="body">
+
+<button data-toggle="modal" data-target="#VersionCreateModal" class="btn bg-black waves-effect btn-sm"><i class="material-icons">add</i></button>
+  {% if versions.items %}
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>VERSION NAME</th>
+             <th>VERSION CODE</th>
+             <th>CREATION DATE</th>
+             <th>EXPIRATION DATE</th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for version in versions.items %}
+         <tr>
+             <th scope="row">{{ version.id }}</th>
+             <td>{{ version.versions_name }}</td>
+             <td>{{ version.versions_code }}</td>
+             <td>{{ version.creation_date|datetime_short }}</td>
+             <td>{{ version.expiration|datetime_short }}</td>
+             <td>
+                 <button onclick="VersionShow('{{ version.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">open_in_new</i></button>
+                 <button onclick="VersionUpdate('{{ version.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">edit</i></button>
+             </td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+
+                    </div>
+               </div>
+          </div>
+     </div>
+
+
+<div class="modal fade" id="VersionShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+
+                            <div class="list-group">
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Version Name</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="versions_name"></div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Version Code</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="versions_code"></div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Description</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="versions_description"></div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Contact secret key</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="contact_secret_key"></div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Versions secret key</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="versions_secret_key"></div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Creation date</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="creation_date"></div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Expiration date</h4>
+                                    <p class="list-group-item-text">
+                                        <div id="expiration"></div>
+                                    </p>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+<div class="modal fade" id="VersionCreateModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+
+                            <div class="list-group">
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Version Name</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="version_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Version Code</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="version_code" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Description</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="6" class="form-control" id="description"></textarea>
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Expiration date</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="datetime-local" id="expiration_date" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                            <button onclick="VersionCreate();" type="button" class="btn btn-link waves-effect"><i class="material-icons">save</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div class="modal fade" id="VersionUpdateModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="list-group">
+                                <input type="hidden" id="update_id" class="form-control">
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Description</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="6" class="form-control" id="update_versions_description"></textarea>
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Expiration date</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="datetime-local" id="update_expiration_date" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                            <button onclick="VersionUpdatePost();" type="button" class="btn btn-link waves-effect"><i class="material-icons">save</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+<script src="https://momentjs.com/downloads/moment.js"></script>
+ <script>
+    function VersionShow(id) {
+            $.ajax({
+                url: '/VersionShow',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        $('#versions_name').html(result.versions_name);
+                        $('#versions_code').html(result.versions_code);
+                        $('#versions_description').html(result.versions_description);
+                        $('#contact_secret_key').html(result.contact_secret_key);
+                        $('#versions_secret_key').html(result.versions_secret_key);
+                        $('#creation_date').html(result.creation_date);
+                        $('#expiration').html(result.expiration);
+                        $("#VersionShowModal").modal('show');
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function VersionCreate() {
+            $.ajax({
+                url: '/VersionCreate',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    version_name: document.getElementById("version_name").value,
+                    version_code: document.getElementById("version_code").value,
+                    description: document.getElementById("description").value,
+                    expiration: document.getElementById("expiration_date").value
+                },
+                success: function (result) {
+                    alertbox(result.result,result.status);
+                    if(result.status)
+                    {
+                        location.reload();
+                    }
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function VersionUpdate(id) {
+            $.ajax({
+                url: '/VersionShow',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        document.getElementById('update_id').value = result.id;
+                        document.getElementById('update_versions_description').value = result.versions_description;
+                        document.getElementById("update_expiration_date").value = moment(result.expiration).format("YYYY-MM-DDTHH:mm:ss");
+                        $("#VersionUpdateModal").modal('show');
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+        function VersionUpdatePost() {
+            $.ajax({
+                url: '/VersionUpdatePost',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: document.getElementById("update_id").value,
+                    description: document.getElementById("update_versions_description").value,
+                    expiration: document.getElementById("update_expiration_date").value
+                },
+                success: function (result) {
+                    alertbox(result.result,result.status);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+    </script>
+{% endblock %}

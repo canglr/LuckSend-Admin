@@ -1,0 +1,205 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Social Media > {{ socialmedia.author_name }} > Saved
+{% endblock %}
+
+{% block content %}
+
+    <div class="row clearfix">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="card profile-card">
+                        <div class="profile-header"></div>
+                        <div class="profile-body">
+                            <div class="image-area">
+                                <img src="{{ author_image }}" width="136px" height="136px" />
+                            </div>
+                            <div class="content-area">
+                                <h3>{{ socialmedia.author_name|upper }}</h3>
+                                <p></p>
+                                <p>{{ socialmedia.id }}#{{ socialmedia.id_share }}</p>
+                            </div>
+                        </div>
+                        <div class="profile-footer">
+                            <ul>
+                                 <li>
+                                    <button data-toggle="modal" data-target="#SocialmediaShowModal" class="btn bg-black waves-effect btn-block"><i class="material-icons">open_in_new</i></button>
+                                 </li>
+                                 <li>
+                                    <a target="_blank" class="btn bg-black waves-effect btn-block" href="{{ socialmedia.media_url }}"><i class="material-icons">open_in_browser</i></a>
+                                 </li>
+                                 <li>
+                                    <span>Display</span>
+                                    <span>{{ socialstatistics_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Clicks</span>
+                                    <span>{{ socialstatistics_clicks_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Saved</span>
+                                    <span>{{ saved_count }}</span>
+                                </li>
+                                <li>
+                                    <span>Sponsor</span>
+                                    <span>
+                                        {% if socialmedia.sponsor %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Verification</span>
+                                    <span>
+                                        {% if socialmedia.verification %}<i class="material-icons">verified_user</i>{% else %}<i class="material-icons">warning</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Type</span>
+                                    <span>
+                                        {% if socialmedia.type %}<i class="material-icons">card_giftcard</i>{% else %}<i class="material-icons">attach_money</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Delete</span>
+                                    <span>
+                                        {% if socialmedia.delete %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Disable</span>
+                                    <span>
+                                        {% if socialmedia.disable %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card card-about-me">
+                        <div class="body">
+                            <ul>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">language</i>
+                                        Language
+                                    </div>
+                                    <div class="content">
+                                        {% for country in countries %}
+                                        <span class="label bg-black">{{ country.country_code }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">tag</i>
+                                        Tags
+                                    </div>
+                                    <div class="content">
+                                        {% for tag in tags %}
+                                        <span class="label bg-black">{{ tag.tag_name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Creation date
+                                    </div>
+                                    <div class="content">
+                                        {{ socialmedia.creation_date|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">update</i>
+                                        Last update
+                                    </div>
+                                    <div class="content">
+                                        {{ socialmedia.last_update|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="card">
+                        <div class="body">
+                            <div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li><a href="/Socialmedia/detail?id={{ socialmedia.id_share }}">Statistics</a></li>
+                                    <li class="active"><a href="/Socialmedia/saved?id={{ socialmedia.id_share }}">Saved</a></li>
+                                    <li><a href="/Socialmedia/edit?id={{ socialmedia.id_share }}">Edit</a></li>
+                                </ul>
+
+ <div class="tab-content">
+{% if socialsaveds.items %}
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>NAME</th>
+             <th>DATE</th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for socialsaved in socialsaveds.items %}
+         <tr>
+             <td scope="row">{{ socialsaved.id }}</td>
+             <td>
+                 <div class="image">
+                    <img class="img-circle" src="{{ socialsaved.profile_picture }}" width="32" height="32" alt="User">
+                     {{ socialsaved.name }}
+                </div>
+             </td>
+             <td>{{ socialsaved.creation_date|datetime_short }}</td>
+             <td><a class="btn bg-black waves-effect btn-sm" target="_blank" href="/User/detail?id={{ socialsaved.id_share }}"><i class="material-icons">more_horiz</i></a></td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}&id={{ socialmedia.id_share }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}&id={{ socialmedia.id_share }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+
+
+    <div class="modal fade" id="SocialmediaShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <textarea rows="20" readonly="readonly" class="form-control">{{ socialmedia.media_description }}</textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+{% endblock %}

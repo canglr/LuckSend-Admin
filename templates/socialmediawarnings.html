@@ -1,0 +1,229 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Social Media > Warnings
+{% endblock %}
+
+{% block content %}
+{% if warnings.items %}
+
+     <div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Warnings
+                            </h2>
+                        </div>
+                        <div class="body">
+
+
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>USER NAME</th>
+             <th>CREATION DATE</th>
+             <th></th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for warning in warnings.items %}
+         <tr>
+             <th scope="row">{{ warning.id }}</th>
+             <td>{{ warning.name }}</td>
+             <td>{{ warning.creation_date|datetime_short }}</td>
+             <td>{%  if warning.read %}<i class="material-icons">mail_outline</i>{% else %}<i class="material-icons">email</i>{% endif %}</td>
+             <td>
+                 <button onclick="WarningsShow('{{ warning.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">feedback</i></button>
+                 <button onclick="SocialmediaShow('{{ warning.social_id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">public</i></button>
+             </td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+
+                    </div>
+               </div>
+          </div>
+     </div>
+
+
+<div class="modal fade" id="WarningsShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="panel panel-default panel-post">
+                                            <div class="panel-heading">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <a id="photo_user_link" target="_blank" href="#">
+                                                            <img id="profile_picture" src="">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <h4 class="media-heading">
+                                                            <a id="user_link" target="_blank" href="#"><div id="user_name"></div></a>
+                                                        </h4>
+                                                        <div id="creation_date"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="post">
+                                                    <div class="post-heading">
+                                                        <p><div id="description"></div></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <div class="modal fade" id="SocialmediaShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="panel panel-default panel-post">
+                                            <div class="panel-heading">
+                                                <div class="media">
+                                                    <div class="media-left">
+                                                        <a id="author_link" target="_blank" href="#">
+                                                            <img id="author_image" src="">
+                                                        </a>
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <h4 class="media-heading">
+                                                            <a id="author_name_link" target="_blank" href="#"><div id="author_name"></div></a>
+                                                        </h4>
+                                                        <div id="creation_date"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="post">
+                                                    <div class="post-heading">
+                                                        <img class="img-thumbnail" id="media_image" src="">
+
+                                                        <textarea style="margin-top:10px;" rows="10" readonly="readonly" class="form-control" id="media_description"></textarea>
+
+                                                        <div class="panel panel-default" style="margin-top:10px;">
+                                                            <div class="panel-heading">Tags</div>
+                                                            <div class="panel-body">
+                                                                <div id="media_tags" style="margin:10px;"></div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="panel panel-default">
+                                                            <div class="panel-heading">Countries</div>
+                                                            <div class="panel-body">
+                                                                 <div id="media_countries" style="margin:10px;"></div>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a id="detail_link" type="button" class="btn btn-link waves-effect" target="_blank" href="#"><i class="material-icons">more_horiz</i></a>
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+    <script>
+    function WarningsShow(id) {
+            $.ajax({
+                url: '/WarningsShow',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        $('#user_name').html(result.name);
+                        $('#creation_date').html(result.creation_date);
+                        $('#description').html(result.description);
+                        document.getElementById("profile_picture").src=result.profile_picture;
+                        document.getElementById("user_link").href='/User/detail?id='+result.user_id;
+                        document.getElementById("photo_user_link").href='/User/detail?id='+result.user_id;
+                        $("#WarningsShowModal").modal('show');
+                },
+                error: function (error) {
+                    swal.close();
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function SocialmediaShow(id) {
+            $.ajax({
+                url: '/Warnings/socialmedia/Show',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        $('#author_name').html(result.author_name);
+                        $('#creation_date').html(result.creation_date);
+                        $('#media_description').html(result.description);
+                        document.getElementById("media_image").src=result.media_image;
+                        document.getElementById("author_image").src=result.author_image;
+                        document.getElementById("author_link").href='https://www.instagram.com/'+result.author_name;
+                        document.getElementById("author_name_link").href='https://www.instagram.com/'+result.author_name;
+                        document.getElementById("detail_link").href='/Socialmedia/detail?id='+result.id_share;
+                        tags_value = [];
+                        for (let i=0; i<result.tags.length; i++)
+                        {
+                            tags_value.push("<span class='label bg-black'>"+result.tags[i]["text"]+"</span> </br>");
+                        }
+
+                        countries_value = [];
+                        for (let i=0; i<result.countries.length; i++)
+                        {
+                            countries_value.push("<span class='label bg-black'>"+result.countries[i]+"</span> </br>");
+                        }
+                        $('#media_tags').html(tags_value.join(''));
+                        $('#media_countries').html(countries_value.join(''));
+                        $("#SocialmediaShowModal").modal('show');
+                },
+                error: function (error) {
+                    swal.close();
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,448 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Users
+{% endblock %}
+
+{% block content %}
+{% if users.items %}
+
+     <div class="row clearfix">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="card">
+                        <div class="header">
+                            <h2>
+                                Users
+                            </h2>
+                        </div>
+                        <div class="body">
+
+<button data-toggle="modal" data-target="#UserCreateModal" class="btn bg-black waves-effect btn-sm"><i class="material-icons">add</i></button>
+<div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+         <tr>
+             <th>ID</th>
+             <th>NAME</th>
+             <th>USER NAME</th>
+             <th>MAIL ADDRESS</th>
+             <th></th>
+             <th></th>
+             <th></th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for user in users.items %}
+         <tr>
+             <th scope="row">{{ user.id }}</th>
+             <td>{{ user.name }}</td>
+             <td>{{ user.user_name }}</td>
+             <td>{{ user.mail_address }}</td>
+             <td><button onclick="UserShow('{{ user.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">open_in_new</i></button></td>
+             <td><button onclick="Userpasswordchange('{{ user.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">vpn_key</i></button></td>
+             <td><button onclick="UserUpdate('{{ user.id }}');" class="btn bg-black waves-effect btn-sm"><i class="material-icons">edit</i></button></td>
+         </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</div>
+    {% if prev_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ prev_url }}"><i class="material-icons">keyboard_arrow_left</i></a>
+    {% endif %}
+    {% if next_url %}
+    <a class="btn bg-black waves-effect btn-sm" href="{{ next_url }}"><i class="material-icons">keyboard_arrow_right</i></a>
+    {% endif %}
+
+    <div class="modal fade" id="UserShowModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                           <div class="card profile-card">
+                        <div class="profile-header">&nbsp;</div>
+                        <div class="profile-body">
+                            <div class="image-area">
+                                <img id="show_profile" src="">
+                            </div>
+                            <div class="content-area">
+                                <h3 id="show_name"></h3>
+                                <p id="show_mail_address"></p>
+                                <p id="show_user_name"></p>
+                            </div>
+                        </div>
+                        <div class="profile-footer">
+                            <ul>
+                                <li>
+                                    <span>Registration date</span>
+                                    <span id="show_creation_date"></span>
+                                </li>
+                                <li>
+                                    <span>Last update</span>
+                                    <span id="show_last_update"></span>
+                                </li>
+                                <li>
+                                    <span>Master</span>
+                                    <span>
+                                        <div class="switch">
+                                            <label><input disabled="disabled" type="checkbox" id="show_master"><span class="lever switch-col-black"></span></label>
+                                        </div>
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Active</span>
+                                    <span>
+                                        <div class="switch">
+                                            <label><input disabled="disabled" type="checkbox" id="show_active"><span class="lever switch-col-black"></span></label>
+                                        </div>
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+    <div class="modal fade" id="UserCreateModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+
+                            <div class="list-group">
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Name</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="name" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">User name</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="user_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Mail address</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="mail_address" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Password</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="password" id="create_password" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Master</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="switch">
+                                            <label><input type="checkbox" id="master"><span class="lever switch-col-black"></span></label>
+                                        </div>
+                                    </p>
+                                </a>
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                            <button onclick="Usercreatepost()();" type="button" class="btn btn-link waves-effect"><i class="material-icons">save</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+    <div class="modal fade" id="UserUpdateModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <input type="hidden" id="update_user_id" class="form-control">
+                            <div class="list-group">
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Name</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="update_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">User name</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="update_user_name" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Mail address</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" id="update_mail_address" class="form-control">
+                                        </div>
+                                    </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Master</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="switch">
+                                            <label><input type="checkbox" id="update_master"><span class="lever switch-col-black"></span></label>
+                                        </div>
+                                    </p>
+                                </a>
+                                <a class="list-group-item">
+                                    <h4 class="list-group-item-heading">Active</h4>
+                                    <p class="list-group-item-text">
+                                        <div class="switch">
+                                            <label><input type="checkbox" id="update_active"><span class="lever switch-col-black"></span></label>
+                                        </div>
+                                    </p>
+                                </a>
+
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                            <button onclick="Userupdatepost();" type="button" class="btn btn-link waves-effect"><i class="material-icons">save</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+     <div class="modal fade" id="userpasswordchange" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="largeModalLabel">Password Change</h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="admin_user_id" class="form-control">
+
+                            <div class="list-group">
+                               <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="password" id="admin_newpassword" class="form-control" placeholder="New password">
+                                        </div>
+                                    </div>
+                            </div>
+
+                            <div class="list-group">
+                               <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="password" id="admin_newpassword2" class="form-control" placeholder="New password">
+                                        </div>
+                                    </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-link waves-effect" data-dismiss="modal"><i class="material-icons">close</i></button>
+                            <button onclick="Userpasswordchangepost();" type="button" class="btn btn-link waves-effect"><i class="material-icons">save</i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% else %}
+        <div class="col-md-12 text-center">
+            <h5>No results</h5>
+        </div>
+{% endif %}
+
+
+
+                    </div>
+               </div>
+          </div>
+     </div>
+{% endblock %}
+
+{% block css %}
+{% endblock %}
+
+{% block js %}
+    <script>
+        function UserShow(id) {
+            $.ajax({
+                url: '/Admin/User/Show',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    if(result)
+                    {
+                        $('#show_name').html(result.name);
+                        $('#show_user_name').html(result.user_name);
+                        $('#show_mail_address').html(result.mail_address);
+                        $('#show_creation_date').html(result.creation_date);
+                        $('#show_last_update').html(result.last_update);
+                        document.getElementById("show_master").checked = result.master;
+                        document.getElementById("show_active").checked = result.active;
+                        document.getElementById("show_profile").src=result.profile_picture;
+                        $("#UserShowModal").modal('show');
+                    }else{
+                        alertbox(result.result,result.status);
+                    }
+
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function Userpasswordchange(id) {
+            $.ajax({
+                url: '/Admin/User/Show',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    if(result)
+                    {
+                        document.getElementById("admin_user_id").value = result.id;
+                        $("#userpasswordchange").modal('show');
+                    }else{
+                        alertbox(result.result,result.status);
+                    }
+
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+        function Userpasswordchangepost() {
+            $.ajax({
+                url: '/Admin/User/PasswordChange',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: document.getElementById("admin_user_id").value,
+                    newpassword: document.getElementById("admin_newpassword").value,
+                    newpassword2: document.getElementById("admin_newpassword2").value
+                },
+                success: function (result) {
+                    if(result.status)
+                    {
+                        $("#userpasswordchange").modal('hide');
+                        document.getElementById("admin_newpassword").value = '';
+                        document.getElementById("admin_newpassword2").value = '';
+                    }
+                    alertbox(result.result,result.status);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+        function Usercreatepost() {
+            $.ajax({
+                url: '/Admin/User/Create',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    name: document.getElementById("name").value,
+                    username: document.getElementById("user_name").value,
+                    mailaddress: document.getElementById("mail_address").value,
+                    password: document.getElementById("create_password").value,
+                    master: document.getElementById("master").checked
+                },
+                success: function (result) {
+                    if(result.status)
+                    {
+                        location.reload();
+                    }
+                    alertbox(result.result,result.status);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+        function UserUpdate(id) {
+            $.ajax({
+                url: '/Admin/User/Show',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                    document.getElementById("update_user_id").value = result.id;
+                    document.getElementById("update_name").value = result.name;
+                    document.getElementById("update_user_name").value = result.user_name;
+                    document.getElementById("update_mail_address").value = result.mail_address;
+                    document.getElementById("update_master").checked = result.master;
+                    document.getElementById("update_active").checked = result.active;
+                    $("#UserUpdateModal").modal('show');
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+        function Userupdatepost() {
+            $.ajax({
+                url: '/Admin/User/Update',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: document.getElementById("update_user_id").value,
+                    name: document.getElementById("update_name").value,
+                    username: document.getElementById("update_user_name").value,
+                    mailaddress: document.getElementById("update_mail_address").value,
+                    master: document.getElementById("update_master").checked,
+                    active: document.getElementById("update_active").checked
+                },
+                success: function (result) {
+                    alertbox(result.result,result.status);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+    </script>
+{% endblock %}

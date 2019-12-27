@@ -1,0 +1,335 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Raffle > {{ raffle.title }} > Edit
+{% endblock %}
+
+{% block content %}
+
+    <div class="row clearfix">
+                <div class="col-xs-12 col-sm-3">
+                    <div class="card profile-card">
+                        <div class="profile-header"></div>
+                        <div class="profile-body">
+                            <div class="content-area">
+                                <h3>{{ raffle.title|upper }}</h3>
+                                <p>{{ raffle.description }}</p>
+                                <p>{{ raffle.id }}#{{ raffle.id_share }}</p>
+                            </div>
+                        </div>
+                        <div class="profile-footer">
+                            <ul>
+                                <li>
+                                    <span>Winners</span>
+                                    <span>{{ raffle.winners }}</span>
+                                </li>
+                                <li>
+                                    <span>Reserves</span>
+                                    <span>{{ raffle.reserves }}</span>
+                                </li>
+                                <li>
+                                    <span>Participants</span>
+                                    <span>{{ participants_count }}</span>
+                                </li>
+                                 <li>
+                                    <span>Status</span>
+                                    <span>
+                                        {% if raffle.status %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Processing</span>
+                                    <span>
+                                        {% if raffle.processing %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Completed</span>
+                                    <span>
+                                        {% if raffle.completed %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Delete</span>
+                                    <span>
+                                        {% if raffle.delete %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                                <li>
+                                    <span>Disable</span>
+                                    <span>
+                                        {% if raffle.disable %}<i class="material-icons">check</i>{% else %}<i class="material-icons">close</i>{% endif %}
+                                    </span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card card-about-me">
+                        <div class="body">
+                            <ul>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">language</i>
+                                        Language
+                                    </div>
+                                    <div class="content">
+                                        {% for country in countries %}
+                                        <span class="label bg-black">{{ country.country_code }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">tag</i>
+                                        Tags
+                                    </div>
+                                    <div class="content">
+                                        {% for tag in tags %}
+                                        <span class="label bg-black">{{ tag.tag_name }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">contacts</i>
+                                        Contact information
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.contact_information }}
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Expiration
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.expiration }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">access_time</i>
+                                        Creation date
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.creation_date|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="title">
+                                        <i class="material-icons">update</i>
+                                        Last update
+                                    </div>
+                                    <div class="content">
+                                        {{ raffle.last_update|datetime_short }} (UTC)
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-9">
+                    <div class="card">
+                        <div class="body">
+                            <div>
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li><a href="/Raffle/detail?id={{ raffle.id_share }}">Participants</a></li>
+                                    <li><a href="/Raffle/lucky?id={{ raffle.id_share }}">Lucky</a></li>
+                                    <li class="active"><a href="/Raffle/edit?id={{ raffle.id_share }}">Edit</a></li>
+                                </ul>
+
+ <div class="tab-content">
+
+             <div class="form-group">
+                <small><b><label>Title:</label></b></small>
+                    <div class="form-line">
+                        <input type="text" class="form-control" autocomplete="off" id="raffle_up_title">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Description:</label></b></small>
+                  <div class="form-line">
+                      <textarea rows="6" class="form-control" id="raffle_up_description"></textarea>
+                  </div>
+              </div>
+
+
+              <div class="form-group">
+                <small><b><label>Contact information:</label></b></small>
+                  <small><i>Winning and replacement contacts can be seen</i></small>
+                  <div class="form-line">
+                      <textarea rows="6" class="form-control" id="raffle_up_contact_information"></textarea>
+                  </div>
+              </div>
+
+
+              <div class="form-group">
+                <small><b><label>Number of People to Win:</label></b></small>
+                  <div class="form-line">
+                      <input type="number" class="form-control" autocomplete="off" id="raffle_up_winners">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Number of replacement people:</label></b></small>
+                  <div class="form-line">
+                      <input type="number" class="form-control" autocomplete="off" id="raffle_up_reserves">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Tags:</label></b></small>
+                  <div class="form-line">
+                      <input type="text" class="form-control" autocomplete="off" id="tags_update">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Country:</label></b></small>
+                      <select id="countries_up_list">
+                      </select>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>The end date:</label></b></small>
+                  <div class="form-line">
+                      <input type="datetime-local" class="form-control" autocomplete="off" id="raffle_up_expiration">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Delete:</label></b></small>
+                  <div class="switch">
+                       <label><input type="checkbox" id="raffle_up_delete"><span class="lever switch-col-black"></span></label>
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <small><b><label>Disable:</label></b></small>
+                  <div class="switch">
+                       <label><input type="checkbox" id="raffle_up_disable"><span class="lever switch-col-black"></span></label>
+                  </div>
+              </div>
+
+              <button onclick="RaffleUpdatePost();" class="btn bg-black waves-effect btn-sm"><i class="material-icons">check</i></button>
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </div>
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.css">
+{% endblock %}
+
+{% block js %}
+<script src="https://momentjs.com/downloads/moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.js"></script>
+<script>
+RaffleUpdate('{{ raffle.id_share }}');
+function RaffleUpdate(id) {
+            RaffleCountriesList();
+            $.ajax({
+                url: '/RaffleShow',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: id
+                },
+                success: function (result) {
+                        let StringtoUtc  = moment.utc(result.expiration).toDate();
+                        document.getElementById('raffle_up_title').value = result.title;
+                        document.getElementById('raffle_up_description').value = result.description;
+                        document.getElementById('raffle_up_contact_information').value = result.contact_information;
+                        document.getElementById('raffle_up_winners').value = result.winners;
+                        document.getElementById('raffle_up_reserves').value = result.reserves;
+                        document.getElementById('raffle_up_delete').checked = result.delete;
+                        document.getElementById('raffle_up_disable').checked = result.disable;
+                        document.getElementById('raffle_up_expiration').value = moment(StringtoUtc).format("YYYY-MM-DDTHH:mm:ss");
+                        //document.getElementById('tags_update-selectized').value = result.tags;
+                        let selectize = $select[0].selectize;
+                        selectize.addOption(result.tags);
+                        tags_value = [];
+                        for (let i=0; i<result.tags.length; i++)
+                        {
+                            tags_value.push(result.tags[i]["text"]);
+                        }
+                        selectize.setValue(tags_value);
+                        let $selectupdate = $(document.getElementById('countries_up_list')).selectize();
+                        let selectizeupdate = $selectupdate[0].selectize;
+                        selectizeupdate.setValue(result.countries_selected);
+
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+function RaffleUpdatePost() {
+            $.ajax({
+                url: '/RaffleUpdate',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    id: '{{ raffle.id_share }}',
+                    title: document.getElementById('raffle_up_title').value,
+                    description: document.getElementById('raffle_up_description').value,
+                    contact_information: document.getElementById('raffle_up_contact_information').value,
+                    winners: document.getElementById('raffle_up_winners').value,
+                    reserves: document.getElementById('raffle_up_reserves').value,
+                    delete: document.getElementById('raffle_up_delete').checked,
+                    disable: document.getElementById('raffle_up_disable').checked,
+                    expiration: moment(document.getElementById('raffle_up_expiration').value).utc().format(),
+                    tags: document.getElementById('tags_update').value,
+                    countries: $('#countries_up_list')[0].selectize.items.join(',')
+                },
+                success: function (result) {
+                        alertbox(result.result,result.status);
+                },
+                error: function (error) {
+
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+function RaffleCountriesList() {
+            $.ajax({
+                url: '/RaffleCountriesList',
+                type: 'POST',
+                dataType: 'json',
+                success: function (result) {
+                    let $selectupdate = $(document.getElementById('countries_up_list')).selectize();
+                    let selectizeupdate = $selectupdate[0].selectize;
+                    selectizeupdate.addOption(result);
+                },
+                error: function (error) {
+                    alertbox('sorry there was an error',false);
+                }
+            });
+        }
+
+
+let $select = $('#tags_update').selectize({
+    delimiter: ',',
+    persist: true,
+    maxTags: 4,
+    create: true
+    });
+
+$('#countries_up_list').selectize({
+	 maxItems: 10,
+     delimiter: ',',
+     persist: true
+    });
+</script>
+
+{% endblock %}
